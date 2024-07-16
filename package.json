@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "serve": "nodemon app.js",
-    "build": "parcel build app.js"
+    "build": "parcel build app.js --dist-dir build"
   },
   "author": "",
   "license": "ISC",
