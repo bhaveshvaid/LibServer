@@ -23,7 +23,9 @@ require("./UserDetails")
 const User = mongoose.model("UserInfo");
  
 app.get("/",(req,res)=>{
-    res.send("got the request")
+  // res.writeHead(200, { 'Content-Type':'text/html'});
+// res.end();
+    res.send("<div> <h1>You have entered the server of LibApp</h1> <br> <h3>This app is designed and developed by <u>Bhavesh Vaid</u> under supervision of Dr. Nabi Hasan and Dr. Mohit Garg</h3> for any further info contact them.</div>")
 })
  
 app.post("/register", async(req,res)=>{
@@ -71,6 +73,27 @@ app.post("/login", async(req,res)=>{
 })
 
 
+//Orcid auth worlflow
+app.get('/orcid/callback', async (req, res) => {
+  const code = req.query.code;
+
+  // Exchange authorization code for access token
+  const tokenResponse = await axios.post('https://api.sandbox.orcid.org/oauth/token', {
+    client_id: process.env.ORCID_CLIENT_ID,
+    client_secret: process.env.ORCID_CLIENT_SECRET,
+    code,
+    redirect_uri: 'https://lib-server.vercel.app/orcid/callback',
+    grant_type: 'authorization_code'
+  });
+
+  const accessToken = tokenResponse.data.access_token;
+
+  // Store access token or use it to fetch user information
+
+  // Redirect user back to frontend with success message or other data
+  res.redirect('libApp://success'); // Replace with your frontend app's custom URL scheme
+});
+
 app.listen(PORT, ()=>{
-    console.log("Server is listining at port 8080");
+  console.log("Server is listining at port 8080");
 });
