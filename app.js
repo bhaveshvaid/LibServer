@@ -29,7 +29,7 @@ app.get("/",(req,res)=>{
 })
  
 app.post("/register", async(req,res)=>{
-    const {name, email,password}= req.body;
+    const {name, email,password,memId}= req.body;
 
     const oldUser = User.findOne({email:email});
     if(oldUser==email){
@@ -40,7 +40,8 @@ app.post("/register", async(req,res)=>{
         await User.create({
             name:name,
             email:email,
-            password:password
+            password:password,
+            memId:memId
         });
         res.send({status:"ok", data:"User Sucesfully Created"})
     } catch (error) {
