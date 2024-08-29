@@ -20,8 +20,12 @@ mongoose.connect(mongoUrl).then(()=>{
     console.log(error);
 })
 require("./UserDetails")
+require("./Announcements")
 const User = mongoose.model("UserInfo");
- 
+const Announcements = mongoose.model("Announcements")
+
+
+
 app.get("/",(req,res)=>{
   // res.writeHead(200, { 'Content-Type':'text/html'});
 // res.end();
@@ -29,7 +33,7 @@ app.get("/",(req,res)=>{
 })
  
 app.post("/register", async(req,res)=>{
-    const {name, email,password,memId}= req.body;
+    const {name, email,password,memId,image}= req.body;
 
     const oldUser = User.findOne({email:email});
     if(oldUser==email){
@@ -41,7 +45,8 @@ app.post("/register", async(req,res)=>{
             name:name,
             email:email,
             password:password,
-            memId:memId
+            memId:memId,
+            image:image
         });
         res.send({status:"ok", data:"User Sucesfully Created"})
     } catch (error) {
@@ -74,6 +79,34 @@ app.post("/login", async(req,res)=>{
 })
 
 
+
+//announcements update
+app.post('/admin/announcements', async (req,res)=>{
+        console.log(req.body)
+        // res.send('contacted successfully with info -> '+ req.body)
+   try {
+        const abc = await Announcements.findOne()
+        if(!abc){
+            await Announcements.create(
+                {array: req.body}
+            )
+            res.send('Created Succesfully')
+        }
+    else await Announcements.updateOne({array:req.body})
+    res.send('Announcements updated sucessfully')
+   } catch (error) {
+        console.log(error)
+        res.send(error)
+   }
+})
+
+//announcements fetch
+app.get('/announcements/get', async (req,res)=>{
+   const announcement= await Announcements.findOne()
+   console.log(announcement)
+   res.send(announcement)
+   
+})
 //Orcid auth worlflow
 app.get('/orcid/callback', async (req, res) => {
   const code = req.query.code;
@@ -89,7 +122,6 @@ app.get('/orcid/callback', async (req, res) => {
 
   const accessToken = tokenResponse.data.access_token;
 
-  // Store access token or use it to fetch user information
 
   // Redirect user back to frontend with success message or other data
   res.redirect('libApp://success'); // Replace with your frontend app's custom URL scheme
