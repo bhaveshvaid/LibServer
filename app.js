@@ -97,6 +97,7 @@ app.post("/login/koha", async(req,res)=>{
           'Cookie': 'CGISESSID=9fd453838ddaad9179d6377dcd3a9bdf', 
           'Content-Type': 'application/json'
         },
+        maxRedirects: 0,
         data : data
       };
       
