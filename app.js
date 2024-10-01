@@ -82,21 +82,33 @@ app.post("/login", async(req,res)=>{
 
 //login with koha API
 app.post("/login/koha", async(req,res)=>{
-    const {id,password}= req.body;
-    const result = await axios.post("https://libcat.iitd.ac.in/cgi-bin/koha/svc/auth/login", {Headers:{
-        'x-api-key': 'aWl0LWRlbGhpLWFwaTphN2JnaHQ4Ny0wODc2LTg3aXUtdTlhOC05ODdraTk3NjA5ODE=', 
-        'X-Requested-With': 'fadfad', 
-        'Cookie': 'CGISESSID=9fd453838ddaad9179d6377dcd3a9bdf', 
-        'Content-Type': 'application/json'
-    },
-    body:{
-     "userid": id,
-    "password": password
-    },
-    
-    })
-    console.log(result);
-    res.send(result);
+    let data = JSON.stringify({
+        "userid": "library",
+        "password": "Central@16"
+      });
+      
+      let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: 'https://libcat.iitd.ac.in/cgi-bin/koha/svc/auth/login',
+        headers: { 
+          'x-api-key': 'aWl0LWRlbGhpLWFwaTphN2JnaHQ4Ny0wODc2LTg3aXUtdTlhOC05ODdraTk3NjA5ODE=', 
+          'X-Requested-With': 'fadfad', 
+          'Cookie': 'CGISESSID=9fd453838ddaad9179d6377dcd3a9bdf', 
+          'Content-Type': 'application/json'
+        },
+        data : data
+      };
+      
+      axios.request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+        res.send(response.data)
+      })
+      .catch((error) => {
+        console.log(error);
+        res.send(error + "ERROR 404")
+      });
 
 })
 
