@@ -1,9 +1,11 @@
 const express = require("express");
 const app = express();
+const axios = require("axios");
 const mongoose = require("mongoose");
 const { OAuth2Client } = require('google-auth-library');
 const cors = require('cors'); // For handling Cross-Origin requests
 const jwt = require('jsonwebtoken'); // For generating JWTs
+const https = require("https")
 
 require('dotenv').config()
 app.use(express.json());
@@ -78,7 +80,27 @@ app.post("/login", async(req,res)=>{
     }
 })
 
+//login with koha API
+app.post("/login/koha", async(req,res)=>{
+    const {id,password}= req.body;
+    const result = await axios.post("https://libcat.iitd.ac.in/cgi-bin/koha/svc/auth/login", {Headers:{
+        'x-api-key': 'aWl0LWRlbGhpLWFwaTphN2JnaHQ4Ny0wODc2LTg3aXUtdTlhOC05ODdraTk3NjA5ODE=', 
+        'X-Requested-With': 'fadfad', 
+        'Cookie': 'CGISESSID=9fd453838ddaad9179d6377dcd3a9bdf', 
+        'Content-Type': 'application/json'
+    },
+    body:{
+     "userid": id,
+    "password": password
+    },
+    httpsAgent: new https.Agent({
+        rejectUnauthorized: false //set to false
+      })
+    })
+    console.log(result);
+    res.send(result);
 
+})
 
 //announcements update
 app.post('/admin/announcements', async (req,res)=>{
