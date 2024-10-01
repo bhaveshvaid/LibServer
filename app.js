@@ -93,9 +93,7 @@ app.post("/login/koha", async(req,res)=>{
      "userid": id,
     "password": password
     },
-    httpsAgent: new https.Agent({
-        rejectUnauthorized: false //set to false
-      })
+    
     })
     console.log(result);
     res.send(result);
